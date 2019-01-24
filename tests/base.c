@@ -8,7 +8,7 @@
 #pragma config(Motor,  motorD,          topLeft,       tmotorEV3_Large, PIDControl, encoder)
 
 int distanceFromStart;
-
+int speed = 0;
 bool motorEnabled = false;
 
 task motorsOn();
@@ -60,8 +60,8 @@ bool isOnBlack()
 task motorsOn()
 {
 	motorEnabled = true;
-	setMotor(bottomLeft, 50);
-	setMotor(bottomRight, 50);
+	setMotor(bottomLeft, speed);
+	setMotor(bottomRight, speed);
 }
 
 void motorsOff()
@@ -98,15 +98,24 @@ void dropPayload()
 	backward(1.5, rotations, 50);
 }
 
+void hammerTime()
+{
+	gotoBlackLine();
+	moveMotor(topLeft, 0.4, rotations, 100);
+	moveMotor(topLeft, 0.3, rotations, -100);
+}
+
 task main()
 {
+	speed = 100;
 	resetMotorEncoder(motorA);
 	resetMotorEncoder(motorB);
 	distanceFromStart = getUSDistance(ultraSonic);
 	resetGyro(gyroScope);
 	//startTask(centerRobot);
-	gotoBlackLine();
-	carryPayload();
-	sleep(200);
+	//gotoBlackLine();
+	//carryPayload();
+	hammerTime();
+	//sleep(20000);
 	//dropPayload();
 }
