@@ -36,9 +36,9 @@ bool isOnWhite()
 		return false;
 }
 
-bool isOnBlack()
+bool isOnBlack(bool right = true, bool left = true)
 {
-	if(getColorReflected(leftColorSensor) < 12 && getColorReflected(rightColorSensor) < 9)
+	if((getColorReflected(leftColorSensor) < 12 || !left) && (getColorReflected(rightColorSensor) < 9 || !right))
 		return true;
 	else
 		return false;
@@ -71,12 +71,12 @@ void gotoWhiteLine()
 	}
 }
 
-void gotoBlackLine()
+void gotoBlackLine(bool right = true, bool left = true)
 {
 	startTask(motorsOn);
 	while(true)
 	{
-		if(getUSDistance(ultraSonic) > 55 && isOnBlack())
+		if(getUSDistance(ultraSonic) > 55 && isOnBlack(right, left))
 		{
 			stopTask(motorsOn);
 			motorsOff();
@@ -112,7 +112,7 @@ void turn45Deg(bool right, float rot = 0.65)
 
 void hammerTime()
 {
-	gotoBlackLine();
+	gotoBlackLine(true, true);
 	moveMotor(topLeft, 0.4, rotations, 100);
 	moveMotor(topLeft, 0.4, rotations, -50);
 }
@@ -126,7 +126,7 @@ void precisionModule()
 	turn45Deg(true);
 	forward(2.25, rotations, 75);
 	turn45Deg(false, 0.6);
-	forward(2, rotations, 75);
+	forward(1.75, rotations, 75);
 	//backward(5, rotations, 75);
 }
 
