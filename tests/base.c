@@ -13,7 +13,7 @@ int speed = 0;
 bool motorEnabled = false;
 int touches = 0;
 
-int totalModules = 2;
+int totalModules = 3;
 
 task motorsOn();
 void motorsOff();
@@ -87,16 +87,24 @@ void gotoBlackLine(bool right = true, bool left = true)
 
 void carryPayload()
 {
-	moveMotor(topRight, 3, rotations, 50);
+	moveMotor(topRight, 10, rotations, 50);
 	forward(1.5, rotations, 50);
-	moveMotor(topRight, 1.5, rotations, -25);
+	moveMotor(topRight, 6, rotations, -25);
 }
 
 void dropPayload()
 {
-	forward(1.5, rotations, 50);
-	moveMotor(topRight, 1.5, rotations, 25);
+	forward(1, rotations, 50);
+	moveMotor(topRight, 6, rotations, 25);
 	backward(1.5, rotations, 50);
+}
+
+void monoRailStart()
+{
+	gotoBlackLine();
+	forward(1, rotations, 50);
+	moveMotor(topRight, 3, rotations, -25);
+	backward(5, rotations, 100);
 }
 
 void turn45Deg(bool right, float rot = 0.65)
@@ -156,6 +164,8 @@ task taskListener()
 					carryPayload();
 					dropPayload();
 					break;
+				case 3:
+					monoRailStart();
 				}
 				setLEDColor(ledGreenFlash);
 			}
@@ -192,7 +202,7 @@ task touchCounter()
 task main()
 {
 	resetBumpedValue(touchSensor);
-	speed = 75;
+	speed = 65;
 	resetMotorEncoder(motorA);
 	resetMotorEncoder(motorB);
 	distanceFromStart = getUSDistance(ultraSonic);
