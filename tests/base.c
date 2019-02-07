@@ -11,9 +11,7 @@ int distanceFromStart;
 int speed = 0;
 bool motorEnabled = false;
 int touches = 0;
-
-int totalModules = 4;
-
+int totalRuns = 5;
 task motorsOn();
 void motorsOff();
 
@@ -70,12 +68,12 @@ void gotoWhiteLine()
 	}
 }
 
-void gotoBlackLine(bool right = true, bool left = true)
+void gotoBlackLine(bool right = true, bool left = true, int distance = 55)
 {
 	startTask(motorsOn);
 	while(true)
 	{
-		if(getUSDistance(ultraSonic) > 55 && isOnBlack(right, left))
+		if(getUSDistance(ultraSonic) > distance && isOnBlack(right, left))
 		{
 			stopTask(motorsOn);
 			motorsOff();
@@ -106,10 +104,10 @@ void monoRailStart()
 	backward(5, rotations, 100);
 }
 
-void useHammer()
+void useHammer(double rot = 0.4)
 {
-	moveMotor(topLeft, 0.4, rotations, 100);
-	moveMotor(topLeft, 0.4, rotations, -50);
+	moveMotor(topLeft, rot, rotations, 100);
+	moveMotor(topLeft, rot, rotations, -50);
 }
 
 void pushSolarPanel()
@@ -131,10 +129,22 @@ void turn45Deg(bool right, float rot = 0.65)
 
 void hammerTime()
 {
-	gotoBlackLine(true, true);
+	gotoBlackLine(true, true, 55);
 	useHammer();
 }
 
+void pushModule()
+{
+	turn45Deg(false);
+	forward(4, rotations, 75);
+	turn45Deg(false);
+	sleep(100);
+	gotoBlackLine(false, true, 30);
+	forward(580, degrees, 75);
+	backward(580, degrees, 75);
+}
+
+/*
 void precisionModule()
 {
 	turn45Deg(false, 0.7);
@@ -146,6 +156,39 @@ void precisionModule()
 	turn45Deg(false, 0.6);
 	forward(1.75, rotations, 75);
 }
+*/
+
+void precisionModule()
+{
+	backward(6, rotations, 75);
+}
+
+void otherSolarPanel()
+{
+	turn45Deg(true);
+	forward(5.5, rotations, 75);
+	turn45Deg(false);
+	forward(3, rotations, 75);
+	useHammer(0.3);
+}
+
+void coreExtraction()
+{
+	startTask(motorsOn);
+	while(true)
+	{
+		if(getUSDistance(ultraSonic) >= 44)
+		{
+			stopTask(motorsOn);
+			motorsOff();
+			break;
+		}
+	}
+	moveMotor(topRight, 3, rotations, 100);
+	forward(3, rotations, 65);
+	moveMotor(topRight, 3, rotations, -100);
+	backward(6, rotations, 65);
+}
 
 task taskListener()
 {
@@ -155,9 +198,9 @@ task taskListener()
 	{
 		while(getTouchValue(touchSensor) == 1)
 		{
-			sleep(1000);
+			sleep(10);
 			secondsPressed++;
-			if(secondsPressed >= 2)
+			if(secondsPressed >= 200)
 			{
 				setLEDColor(ledRedFlash);
 				sleep(750);
@@ -166,7 +209,9 @@ task taskListener()
 				{
 				case 1:
 					hammerTime();
-					precisionModule();
+					pushModule();
+					otherSolarPanel();
+					//precisionModule();
 					break;
 				case 2:
 					gotoBlackLine();
@@ -178,6 +223,9 @@ task taskListener()
 					break;
 				case 4:
 					pushSolarPanel();
+					break;
+				case 5:
+					coreExtraction();
 					break;
 				}
 				setLEDColor(ledGreenFlash);
@@ -196,7 +244,7 @@ task touchCounter()
 	{
 		if(getBumpedValue(touchSensor) == 1)
 		{
-			touches = (touches % totalModules) + 1;
+			touches = (touches % totalRuns) + 1;
 			resetBumpedValue(touchSensor);
 			displayVariableValues(11, touches);
 		}
