@@ -15,16 +15,6 @@ int totalRuns = 5;
 task motorsOn();
 void motorsOff();
 
-void calibrateMotors()
-{
-	if(motorEnabled)
-		startTask(motorsOn);
-	else {
-		stopTask(motorsOn);
-		motorsOff();
-	}
-}
-
 bool isOnWhite()
 {
 	if(getColorReflected(leftColorSensor) > 75 && getColorReflected(rightColorSensor) > 65)
@@ -52,20 +42,6 @@ void motorsOff()
 {
 	motorEnabled = false;
 	stopAllMotors();
-}
-
-void gotoWhiteLine()
-{
-	startTask(motorsOn);
-	while(true)
-	{
-		if(getUSDistance(ultraSonic) > 55 && isOnWhite())
-		{
-			stopTask(motorsOn);
-			motorsOff();
-			break;
-		}
-	}
 }
 
 void gotoBlackLine(bool right = true, bool left = true, int distance = 55)
@@ -110,12 +86,6 @@ void useHammer(double rot = 0.4)
 	moveMotor(topLeft, rot, rotations, -50);
 }
 
-void pushSolarPanel()
-{
-	forward(7.5, rotations, 100);
-	useHammer();
-}
-
 void turn45Deg(bool right, float rot = 0.65)
 {
 	if(right)
@@ -127,10 +97,28 @@ void turn45Deg(bool right, float rot = 0.65)
 	}
 }
 
+void pushSolarPanel()
+{
+	startTask(motorsOn);
+	while(true)
+	{
+		if(getUSDistance(ultraSonic) >= 81)
+		{
+			stopTask(motorsOn);
+			motorsOff();
+			break;
+		}
+	}
+	useHammer();
+	turn45Deg(true, 0.2);
+	backward(7.5, rotations, 100);
+}
+
 void hammerTime()
 {
 	gotoBlackLine(true, true, 55);
-	useHammer();
+	useHammer(0.3);
+	backward(6, rotations, 65);
 }
 
 void pushModule()
@@ -187,6 +175,7 @@ void coreExtraction()
 	moveMotor(topRight, 3, rotations, 100);
 	forward(3, rotations, 65);
 	moveMotor(topRight, 3, rotations, -100);
+	turn45Deg(false, 0.35);
 	backward(6, rotations, 65);
 }
 
@@ -211,7 +200,7 @@ task taskListener()
 					hammerTime();
 					pushModule();
 					otherSolarPanel();
-					//precisionModule();
+					precisionModule();
 					break;
 				case 2:
 					gotoBlackLine();
