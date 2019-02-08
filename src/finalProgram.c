@@ -98,7 +98,10 @@ void otherSolarPanel()
 
 void precisionModule()
 {
-	backward(6, rotations, 75); // Move robot back and push the solar panel, this is the final movement
+	turn45Deg(true, 0.45);
+	backward(6.5, rotations, 75); // Move robot back and push the solar panel, this is the final movement
+	turn45Deg(false, 0.45);
+	backward(2.15, rotations, 75);
 }
 
 void monoRailStart()
@@ -120,7 +123,7 @@ void pushSolarPanel()
 void coreExtraction()
 {
 	// Keep going forward until robot is 44 cm away from the board based on the ultraSonic
-	goDistance(44);
+	goDistance(45);
 
 	// Lower the hand
 	moveMotor(topRight, 3, rotations, 100);
