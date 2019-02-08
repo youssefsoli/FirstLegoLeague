@@ -103,7 +103,7 @@ void precisionModule()
 
 void monoRailStart()
 {
-	gotoBlackLine // Go to black line
+	gotoBlackLine(); // Go to black line
 	forward(1, rotations, 50); // Go 1 rotation forward to insert arm below the monorail
 	moveMotor(topRight, 3, rotations, -25); // Moves arm up to raise monorail
 	backward(5, rotations, 100); // Go back to base
@@ -121,19 +121,19 @@ void coreExtraction()
 {
 	// Keep going forward until robot is 44 cm away from the board based on the ultraSonic
 	goDistance(44);
-	
+
 	// Lower the hand
 	moveMotor(topRight, 3, rotations, 100);
-	
+
 	// Move forward and push them off
 	forward(3, rotations, 65);
-	
+
 	// Raise the hand back to original
 	moveMotor(topRight, 3, rotations, -100);
-	
+
 	// Tilt towards corner of base
 	turn45Deg(false, 0.35);
-	
+
 	// Reverse until within base
 	backward(6, rotations, 65);
 }
@@ -191,7 +191,7 @@ task touchCounter()
 	{
 		if(getBumpedValue(touchSensor) == 1) // Check if the button was pressed and released
 		{
-			touches = (touches % totalRuns) + 1; // Add 1 to the touch counter and loop back to 1 if 
+			touches = (touches % totalRuns) + 1; // Add 1 to the touch counter and loop back to 1 if
 			resetBumpedValue(touchSensor); // Reset touch value to 0 in order to capture the next touch
 			displayVariableValues(11, touches); // Display the current module number
 		}
