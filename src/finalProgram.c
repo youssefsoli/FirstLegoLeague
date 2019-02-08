@@ -13,8 +13,8 @@ int totalRuns = 4;
 
 task motorsOn()
 {
-	setMotor(bottomLeft, speed); // Turns on the left motor
 	setMotor(bottomRight, speed); // Turns on the right motor
+	setMotor(bottomLeft, speed); // Turns on the left motor
 }
 
 bool isOnBlack(bool right = true, bool left = true)
@@ -72,7 +72,7 @@ void useHammer(double rot = 0.4)
 
 void hammerTime()
 {
-	gotoBlackLine(true, true, 55); // Move towards the black line in front of spaceship module
+	gotoBlackLine(true, true, 62); // Move towards the black line in front of spaceship module
 	useHammer(); // Hit the module with the hammer
 }
 
