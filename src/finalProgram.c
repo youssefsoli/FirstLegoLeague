@@ -98,10 +98,10 @@ void otherSolarPanel()
 
 void precisionModule()
 {
-	turn45Deg(true, 0.45);
-	backward(6.5, rotations, 75); // Move robot back and push the solar panel, this is the final movement
-	turn45Deg(false, 0.45);
-	backward(2.15, rotations, 75);
+	turn45Deg(true, 0.45); // Turn 45 degrees to the front of the module
+	backward(6.5, rotations, 75); // Move robot back near the observatory
+	turn45Deg(false, 0.45); // Tilt towards the needle
+	backward(2.15, rotations, 75); // Push needle within bounds and stay put
 }
 
 void monoRailStart()
@@ -114,10 +114,10 @@ void monoRailStart()
 
 void pushSolarPanel()
 {
-	goDistance(81);
-	useHammer();
-	turn45Deg(true, 0.2);
-	backward(7.5, rotations, 100);
+	goDistance(81); // Move 81 cm forward
+	useHammer(); // Hit solar panel with hammer
+	turn45Deg(true, 0.2); // Tilt towards home base
+	backward(7.5, rotations, 100); // Drive back to homebase
 }
 
 void coreExtraction()
